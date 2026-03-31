@@ -42,8 +42,16 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Transform wallCheck;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private LayerMask groundLayer; // ONLY layer used
+
+    // Game Feel
+    private float coyoteTime = 0.2f;
+    private float coyoteTimeCounter;
+
+    private float jumpBufferTime = 0.2f;
+    private float jumpBufferCounter;
+
+    private float fallMultiplier = 2f;
 
     void Update()
     {
@@ -51,15 +59,35 @@ public class PlayerMovement : MonoBehaviour
 
         horizontal = Input.GetAxisRaw("Horizontal");
 
-        // Jump
-        if (Input.GetButtonDown("Jump") && IsGrounded())
+        // --- COYOTE TIME ---
+        if (IsGrounded())
+            coyoteTimeCounter = coyoteTime;
+        else
+            coyoteTimeCounter -= Time.deltaTime;
+
+        // --- JUMP BUFFER ---
+        if (Input.GetButtonDown("Jump"))
+            jumpBufferCounter = jumpBufferTime;
+        else
+            jumpBufferCounter -= Time.deltaTime;
+
+        // --- JUMP ---
+        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpingPower);
+            jumpBufferCounter = 0f;
         }
 
+        // Variable jump height
         if (Input.GetButtonUp("Jump") && rb.linearVelocity.y > 0f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
+        }
+
+        // Better fall
+        if (rb.linearVelocity.y < 0)
+        {
+            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
 
         // Crouch
@@ -91,7 +119,6 @@ public class PlayerMovement : MonoBehaviour
         {
             wallJumpLockCounter -= Time.fixedDeltaTime;
 
-            // Force movement away from wall
             rb.linearVelocity = new Vector2(
                 wallJumpingDirection * wallJumpingPower.x,
                 rb.linearVelocity.y
@@ -110,7 +137,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool IsWalled()
     {
-        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, groundLayer);
     }
 
     private void WallSlide()
@@ -136,7 +163,6 @@ public class PlayerMovement : MonoBehaviour
             isWallJumping = false;
             wallJumpingDirection = -transform.localScale.x;
             wallJumpingCounter = wallJumpingTime;
-
             CancelInvoke(nameof(StopWallJumping));
         }
         else
@@ -157,8 +183,6 @@ public class PlayerMovement : MonoBehaviour
 
             wallJumpingCounter = 0f;
             lastWallJumpTime = Time.time;
-
-            // Lock movement so player is forced away
             wallJumpLockCounter = wallJumpControlLockTime;
 
             if (transform.localScale.x != wallJumpingDirection)
@@ -193,10 +217,9 @@ public class PlayerMovement : MonoBehaviour
         isDashing = true;
 
         float direction = transform.localScale.x;
-
         float originalGravity = rb.gravityScale;
-        rb.gravityScale = 0f;
 
+        rb.gravityScale = 0f;
         rb.linearVelocity = new Vector2(direction * dashPower, 0f);
 
         yield return new WaitForSeconds(dashTime);
