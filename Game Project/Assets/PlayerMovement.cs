@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     private float horizontal;
     private float speed = 8f;
-    private float jumpingPower = 16f;
+    private float jumpingPower = 14f;
     private bool isFacingRight = true;
 
     [Header("Wall Mechanics")]
@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
     private float wallJumpingDuration = 0.4f;
     private Vector2 wallJumpingPower = new Vector2(8f, 16f);
 
-    private float wallJumpCooldown = 0.3f;
+    private float wallJumpCooldown = 1f;
     private float lastWallJumpTime;
 
     private float wallJumpControlLockTime = 0.2f;
@@ -29,9 +29,11 @@ public class PlayerMovement : MonoBehaviour
     [Header("Dash")]
     private bool canDash = true;
     private bool isDashing;
-    private float dashPower = 24f;
+    private float dashPower = 17f;
     private float dashTime = 0.2f;
     private float dashCooldown = 1f;
+
+    [SerializeField] private TrailRenderer dashTrail;
 
     [Header("Crouch")]
     private bool crouch;
@@ -42,9 +44,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Transform wallCheck;
-    [SerializeField] private LayerMask groundLayer; // ONLY layer used
+    [SerializeField] private LayerMask groundLayer;
 
-    // Game Feel
     private float coyoteTime = 0.2f;
     private float coyoteTimeCounter;
 
@@ -53,48 +54,47 @@ public class PlayerMovement : MonoBehaviour
 
     private float fallMultiplier = 2f;
 
+    void Start()
+    {
+        if (dashTrail != null)
+            dashTrail.emitting = false;
+    }
+
     void Update()
     {
         if (isDashing) return;
 
         horizontal = Input.GetAxisRaw("Horizontal");
 
-        // --- COYOTE TIME ---
         if (IsGrounded())
             coyoteTimeCounter = coyoteTime;
         else
             coyoteTimeCounter -= Time.deltaTime;
 
-        // --- JUMP BUFFER ---
         if (Input.GetButtonDown("Jump"))
             jumpBufferCounter = jumpBufferTime;
         else
             jumpBufferCounter -= Time.deltaTime;
 
-        // --- JUMP ---
         if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpingPower);
             jumpBufferCounter = 0f;
         }
 
-        // Variable jump height
         if (Input.GetButtonUp("Jump") && rb.linearVelocity.y > 0f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
         }
 
-        // Better fall
         if (rb.linearVelocity.y < 0)
         {
             rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
 
-        // Crouch
         crouch = Input.GetKey(KeyCode.LeftControl);
         boxCollider.enabled = !crouch;
 
-        // Dash
         if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
         {
             StartCoroutine(Dash());
@@ -222,10 +222,16 @@ public class PlayerMovement : MonoBehaviour
         rb.gravityScale = 0f;
         rb.linearVelocity = new Vector2(direction * dashPower, 0f);
 
+        if (dashTrail != null)
+            dashTrail.emitting = true;
+
         yield return new WaitForSeconds(dashTime);
 
         rb.gravityScale = originalGravity;
         isDashing = false;
+
+        if (dashTrail != null)
+            dashTrail.emitting = false;
 
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
