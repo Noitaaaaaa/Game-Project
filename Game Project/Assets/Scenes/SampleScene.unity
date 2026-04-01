@@ -955,7 +955,7 @@ GameObject:
   - component: {fileID: 1253628059}
   - component: {fileID: 1253628058}
   - component: {fileID: 1253628060}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Wall (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1231,7 +1231,7 @@ GameObject:
   - component: {fileID: 1434313394}
   - component: {fileID: 1434313393}
   - component: {fileID: 1434313392}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Wall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1392,16 +1392,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   boxCollider: {fileID: 1565185429}
-  circleCollider: {fileID: 0}
+  circleCollider: {fileID: 1565185428}
   rb: {fileID: 1565185431}
   groundCheck: {fileID: 1040169850}
   wallCheck: {fileID: 1754284993}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!58 &1565185428
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1599,7 +1596,7 @@ GameObject:
   - component: {fileID: 1583635325}
   - component: {fileID: 1583635324}
   - component: {fileID: 1583635326}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Wall (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1768,7 +1765,7 @@ GameObject:
   - component: {fileID: 1789099699}
   - component: {fileID: 1789099698}
   - component: {fileID: 1789099700}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1905,7 +1902,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2019132765}
   - component: {fileID: 2019132764}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
