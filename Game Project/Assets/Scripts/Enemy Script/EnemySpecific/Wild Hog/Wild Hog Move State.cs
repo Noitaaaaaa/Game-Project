@@ -31,6 +31,8 @@ public class WildHogMoveState : MoveState
     {
         base.LogicUpdate();
 
+        Debug.Log("MOVE STATE ACTIVE");
+
         if (isDetectingWall || !isDetectingLedge)
         {
             wildHog.idleState.SetFlipAfterIdle(true);
@@ -41,5 +43,7 @@ public class WildHogMoveState : MoveState
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
+
+        entity.SetVelocity(stateData.movementSpeed);
     }
 }

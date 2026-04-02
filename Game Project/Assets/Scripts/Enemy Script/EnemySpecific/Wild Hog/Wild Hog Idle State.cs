@@ -29,6 +29,8 @@ public class WildHogIdleState : IdleState
     {
         base.LogicUpdate();
 
+        Debug.Log("IdleTimeOver: " + isIdleTimeOver);
+
         if (isIdleTimeOver)
         {
             stateMachine.ChangeState(wildHog.moveState);
