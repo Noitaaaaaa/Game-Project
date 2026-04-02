@@ -14,6 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::D_Entity
   wallCheckDistance: 0.2
   ledgeCheckDistance: 0.4
+  minAgroDistance: 5
+  maxAgroDistance: 8
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
+  whatIsPlayer:
+    serializedVersion: 2
+    m_Bits: 8
