@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eee41783b800fd043978e5323003a037, type: 3}
   m_Name: WildHog_MoveState
   m_EditorClassIdentifier: Assembly-CSharp::D_MoveState
-  movementSpeed: 3
+  movementSpeed: 4
