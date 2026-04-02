@@ -29,9 +29,11 @@ public class WildHogIdleState : IdleState
     {
         base.LogicUpdate();
 
-        Debug.Log("IdleTimeOver: " + isIdleTimeOver);
-
-        if (isIdleTimeOver)
+        if (isPlayerInMinAgroRange)
+        {
+            stateMachine.ChangeState(wildHog.playerDetectedState);
+        }
+        else if (isIdleTimeOver)
         {
             stateMachine.ChangeState(wildHog.moveState);
         }

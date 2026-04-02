@@ -31,9 +31,11 @@ public class WildHogMoveState : MoveState
     {
         base.LogicUpdate();
 
-        Debug.Log("MOVE STATE ACTIVE");
-
-        if (isDetectingWall || !isDetectingLedge)
+        if (isPlayerInMinAgroRange)
+        {
+            stateMachine.ChangeState(wildHog.playerDetectedState);
+        }
+        else if (isDetectingWall || !isDetectingLedge)
         {
             wildHog.idleState.SetFlipAfterIdle(true);
             stateMachine.ChangeState(wildHog.idleState);
