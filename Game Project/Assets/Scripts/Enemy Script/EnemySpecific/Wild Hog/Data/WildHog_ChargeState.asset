@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: WildHog_ChargeState
   m_EditorClassIdentifier: Assembly-CSharp::D_ChargeState
   chargeSpeed: 10
-  chargeTime: 2
+  chargeTime: 0.5
