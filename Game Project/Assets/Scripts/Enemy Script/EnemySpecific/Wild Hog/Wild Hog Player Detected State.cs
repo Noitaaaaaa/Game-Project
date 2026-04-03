@@ -25,10 +25,13 @@ public class WildHogPlayerDetectedState : PlayerDetectedState
 
         Debug.Log("Player Detected State Active");
 
-        if (!isPlayerInMinAgroRange)
+        if (performLongRangeAction)
         {
-            wildHog.idleState.SetFlipAfterIdle(false);
-            stateMachine.ChangeState(wildHog.idleState);
+            stateMachine.ChangeState(wildHog.chargestate);
+        }
+        else if (!isPlayerInMaxAgroRange)
+        {
+            stateMachine.ChangeState(wildHog.lookForPlayerState);
         }
     }
 
